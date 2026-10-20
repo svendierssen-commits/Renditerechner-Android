@@ -25,6 +25,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Neue UI-Quellen einspielen
+        run: |
+          tar -xJf ui21-java.tar.xz
+          test -s app/src/main/java/de/renditerechner/mobile/MainActivity.java
+          grep -q "UI-Überarbeitung 2.1" app/src/main/java/de/renditerechner/mobile/MainActivity.java
       - name: Build debug APK
         run: gradle --no-daemon --stacktrace :app:assembleDebug
       - name: KVM permissions
@@ -42,18 +47,26 @@ jobs:
           script: |
             adb install -r app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
-            adb shell am start -W -n de.renditerechner.mobile/.MainActivity
+            adb shell am start -W -n de.renditerechner.mobile.v21/de.renditerechner.mobile.MainActivity
             sleep 8
-            adb shell pidof de.renditerechner.mobile || (adb logcat -d -t 1000 > crash-log.txt; cat crash-log.txt; exit 1)
-            adb shell dumpsys activity activities | grep -q de.renditerechner.mobile || (adb logcat -d -t 1000 > crash-log.txt; cat crash-log.txt; exit 1)
+            adb shell pidof de.renditerechner.mobile.v21 || (adb logcat -d -t 1000 > crash-log.txt; cat crash-log.txt; exit 1)
+            adb shell dumpsys activity activities | grep -q de.renditerechner.mobile.v21 || (adb logcat -d -t 1000 > crash-log.txt; cat crash-log.txt; exit 1)
             adb shell input tap 155 160
-            adb shell pidof de.renditerechner.mobile
+            adb shell pidof de.renditerechner.mobile.v21
+      - name: Screenshot der Startseite
+        run: adb exec-out screencap -p > start-screenshot.png
       - name: APK hochladen
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Renditerechner-Android-APK
+          name: Renditerechner-Android-2.1-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Screenshot hochladen
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Renditerechner-2.1-Screenshot
+          path: start-screenshot.png
       - name: Fehlerprotokoll
         if: failure()
         uses: actions/upload-artifact@v4
