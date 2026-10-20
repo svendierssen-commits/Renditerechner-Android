@@ -25,11 +25,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Neue UI-Quellen einspielen
-        run: |
-          tar -xJf ui21-java.tar.xz
-          test -s app/src/main/java/de/renditerechner/mobile/MainActivity.java
-          grep -q "UI-Überarbeitung 2.1" app/src/main/java/de/renditerechner/mobile/MainActivity.java
       - name: Build debug APK
         run: gradle --no-daemon --stacktrace :app:assembleDebug
       - name: KVM permissions
@@ -53,8 +48,7 @@ jobs:
             adb shell dumpsys activity activities | grep -q de.renditerechner.mobile.v21 || (adb logcat -d -t 1000 > crash-log.txt; cat crash-log.txt; exit 1)
             adb shell input tap 155 160
             adb shell pidof de.renditerechner.mobile.v21
-      - name: Screenshot der Startseite
-        run: adb exec-out screencap -p > start-screenshot.png
+            adb exec-out screencap -p > start-screenshot.png
       - name: APK hochladen
         if: success()
         uses: actions/upload-artifact@v4
