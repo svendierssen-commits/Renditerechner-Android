@@ -73,8 +73,8 @@ public class MainActivity extends Activity {
  section=null;
  // Unneeded fields remain available to the calculation and persistence, but are collapsed.
  // Keep view structure stable while switching options.
- advance.setOnCheckedChangeListener((b,v)->{options.setVisibility(View.VISIBLE);tax.getParent().setVisibility(v?View.VISIBLE:View.GONE);free.getParent().setVisibility(v?View.VISIBLE:View.GONE);inflation.getParent().setVisibility(v?View.VISIBLE:View.GONE);refresh();});
- boolean ex=advance.isChecked();tax.getParent().setVisibility(ex?View.VISIBLE:View.GONE);free.getParent().setVisibility(ex?View.VISIBLE:View.GONE);inflation.getParent().setVisibility(ex?View.VISIBLE:View.GONE);
+ advance.setOnCheckedChangeListener((b,v)->{options.setVisibility(View.VISIBLE);((View)tax.getParent()).setVisibility(v?View.VISIBLE:View.GONE);((View)free.getParent()).setVisibility(v?View.VISIBLE:View.GONE);((View)inflation.getParent()).setVisibility(v?View.VISIBLE:View.GONE);refresh();});
+ boolean ex=advance.isChecked();((View)tax.getParent()).setVisibility(ex?View.VISIBLE:View.GONE);((View)free.getParent()).setVisibility(ex?View.VISIBLE:View.GONE);((View)inflation.getParent()).setVisibility(ex?View.VISIBLE:View.GONE);
  LinearLayout actions=panel(false);heading(actions,"Deine Szenarien","Speichere deine Berechnung oder öffne die Auswertung.");
  Button save=button("Szenario speichern",true);actions.addView(save,new LinearLayout.LayoutParams(-1,dp(50)));
  save.setOnClickListener(v->{remember();EditText input=new EditText(this);input.setHint("Name des Szenarios");new AlertDialog.Builder(this).setTitle("Szenario speichern").setView(input).setPositiveButton("Speichern",(d,w)->save(input.getText().toString())).setNegativeButton("Abbrechen",null).show();});
